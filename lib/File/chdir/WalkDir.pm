@@ -6,6 +6,7 @@ use warnings;
 use parent 'Exporter';
 our @EXPORT = ( qw/walkdir/ );
 
+use File::Spec::Functions 'no_upwards';
 use File::chdir;
 
 sub walkdir {
@@ -18,7 +19,8 @@ sub walkdir {
 
   FILE: while ( my $entry = readdir $dh ) {
     
-    next if ($entry =~ /^\.+$/);
+    # next if the $entry refers to a '.' or '..' like construct
+    next unless no_upwards( $entry );
     
     foreach my $pattern (@excluded_patterns) {
       next FILE if ($entry =~ $pattern);
