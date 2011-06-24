@@ -58,7 +58,7 @@ File::chdir::WalkDir
 
  walkdir( $dir, $do_something, qr/^\./ );
  # executes $do_something->($filename, $directory) [$directory is the folder
- # containing $filename] for all files within directory $dir and all 
+ # containing $filename] for all files within the directory and all 
  # subdirectories. In this case excluding all files and folders that 
  # are named with a leading `.'.
 
