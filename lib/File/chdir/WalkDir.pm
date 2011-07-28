@@ -68,11 +68,11 @@ This module is a wrapper around David Golden's excellent module L<File::chdir> f
 
 =head1 FUNCTION
 
-=head2 walkdir( $dir, $code_ref, < @patterns >);
+=head2 walkdir( $dir, $code_ref [, @exclusion_patterns ]);
 
 C<walkdir> takes a base directory (either absolute or relative to the current working directory) and a code reference to be executed for each (qualifing) file. This code reference will by called with the arguments (i.e. C<@_>) containing the filename and the full folder that contains it. Through the magic of C<File::chdir>, the working directory when the code is executed will also be the folder containing the file.
 
-Optionally exclusion patterns (i.e. C<qr//>) may by passed which will exclude BOTH files AND directories (and hence all subfiles/subdirectories) which match any of the patterns. This is a course exclusion. Fine detail may be used in excluding files by returning early from the code reference.
+Optionally exclusion patterns (i.e. C<qr//>) may by passed which will exclude BOTH files AND directories (and hence all subfiles/subdirectories) which match any of the patterns. This is a coarse exclusion. Fine detail may be used in excluding files by returning early from the code reference.
 
 Note: C<walkdir> will act on symlinked files but not on symlinked folders to prevent unwanted actions outside the folder and to prevent infinite loops. To exclude symlinked files too add a line like C<return if (-l $filename);> near the top of the code to be executed; this is an example of the fine exclusion mentioned above.
 
