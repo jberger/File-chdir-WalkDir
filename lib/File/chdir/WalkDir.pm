@@ -10,8 +10,13 @@ use File::Spec::Functions 'no_upwards';
 use File::chdir;
 
 sub walkdir {
+  my $opts = pop if ( ref $_[-1] eq 'HASH' );
 
   my ($dir, $code_ref, @excluded_patterns) = @_;
+
+  if (defined $opts->{'exclude'} and ref $opts->{'exclude'} eq 'Array') {
+    push @excluded_patterns, @{ $opts->{'exclude'};
+  }
 
   local $CWD = $dir;
   opendir( my $dh, $CWD);
@@ -29,6 +34,7 @@ sub walkdir {
     if (-d $entry) {
       next if (-l $entry); # skip linked directories
       walkdir($entry, $code_ref, @excluded_patterns);
+      $code_ref->($entry, $CWD) if $opts->{'act_on_directories');
     } else {
       $code_ref->($entry, $CWD);
     }
