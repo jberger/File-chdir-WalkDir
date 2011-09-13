@@ -34,7 +34,7 @@ sub walkdir {
     if (-d $entry) {
       next if (-l $entry); # skip linked directories
       walkdir($entry, $code_ref, @excluded_patterns);
-      $code_ref->($entry, $CWD) if $opts->{'act_on_directories');
+      $code_ref->($entry, $CWD) if $opts->{'act_on_directories'};
     } else {
       $code_ref->($entry, $CWD);
     }
