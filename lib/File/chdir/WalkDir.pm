@@ -32,6 +32,20 @@ sub walkdir {
     # next if the $entry refers to a '.' or '..' like construct
     next unless no_upwards( $entry );
     
+    my $include = $opts->{'include'};
+    if (@$include) {
+      my $allow = 0;
+
+      foreach my $pattern (@$include) {
+        if ($entry =~ $pattern) {
+          $allow = 1;
+          last;
+        }
+      }
+
+      next unless $allow; 
+    }
+
     foreach my $pattern (@{ $opts->{'exclude'} }) {
       next FILE if ($entry =~ $pattern);
     }  
@@ -94,7 +108,7 @@ This module is a wrapper around David Golden's excellent module L<File::chdir> f
 
 C<walkdir> takes a base directory (either absolute or relative to the current working directory) and a code reference to be executed for each (qualifing) file. This code reference will by called with the arguments (i.e. C<@_>) containing the filename and the full folder that contains it. Through the magic of C<File::chdir>, the working directory when the code is executed will also be the folder containing the file.
 
-Optionally exclusion patterns (i.e. C<qr//>) may by passed which will exclude BOTH files AND directories (and hence all subfiles/subdirectories) which match any of the patterns. This is a coarse exclusion. Fine detail may be used in excluding files by returning early from the code reference. This use is discouraged in favor of the C<exclude> option below.
+Optionally exclusion patterns may by passed which will exclude BOTH files AND directories (and hence all subfiles/subdirectories) which match any of the patterns.  This use is discouraged in favor of the C<exclude> option below.
 
 An optional hash reference, passed as the last option to C<walkdir> will process key-value pairs as follows:
 
@@ -102,7 +116,15 @@ An optional hash reference, passed as the last option to C<walkdir> will process
 
 =item *
 
-C<exclude> - an array reference of exclusion patterns, same as passing to the function described above. In fact this mechanism is preferred since it is how these patterns are passed up the directory tree internally.
+C<include> - an array reference of inclusion patterns (i.e. C<qr//>). 
+
+If this option is not empty, files/folders will be skipped unless they meet one of these patterns. The are checked in order and short-circuit when a match is found. This check is executed before exclusion patterns are checked.
+
+=item *
+
+C<exclude> - an array reference of exclusion patterns (i.e. C<qr//>). 
+
+If specified, files/folders which match any of these patterns will be immediately skipped. They are checked in order and short-circuit when a match is found. This check is executed after inclusion patterns are checked. This is a coarse exclusion. Fine detail may be used in excluding files by returning early from the code reference.
 
 =item *
 
