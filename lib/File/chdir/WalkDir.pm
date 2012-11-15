@@ -32,7 +32,7 @@ sub walkdir {
     # next if the $entry refers to a '.' or '..' like construct
     next unless no_upwards( $entry );
     
-    my $include = $opts->{'include'};
+    my $include = $opts->{'include'} || [];
     if (@$include) {
       my $allow = 0;
 
@@ -46,7 +46,7 @@ sub walkdir {
       next unless $allow; 
     }
 
-    foreach my $pattern (@{ $opts->{'exclude'} }) {
+    foreach my $pattern (@{ $opts->{'exclude'} || [] }) {
       next FILE if ($entry =~ $pattern);
     }  
 
